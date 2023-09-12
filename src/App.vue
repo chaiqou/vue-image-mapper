@@ -22,6 +22,11 @@
       />
       <v-group>
         <v-line :config="lineConfig" :points="flattenedPoints" />
+        <v-rect
+          v-for="(point, index) in points"
+          :key="index"
+          :config="rectangleConfig(point, index)"
+        />
       </v-group>
     </v-layer>
   </v-stage>
@@ -66,6 +71,61 @@ const lineConfig = computed(() => ({
   strokeWidth: 5,
   closed: isFinished.value,
 }));
+
+const getRectangleAttributes = (index) =>
+  index === 0
+    ? {
+        hitStrokeWidth: 12,
+        onMouseOver: handleMouseOverStartPoint,
+        onMouseOut: handleMouseOutStartPoint,
+      }
+    : {};
+
+const rectangleConfig = (point, index) => ({
+  x: point[0] - 6 / 2.5,
+  y: point[1] - 6 / 2.5,
+  width: 6,
+  height: 6,
+  fill: "red",
+  stroke: "red",
+  strokeWidth: 3,
+  draggable: isEditing.value,
+  onDragMove: handleDragMovePoint,
+  ...getRectangleAttributes(index),
+});
+
+const handleMouseOverStartPoint = (event) => {
+  if (isFinished.value || points.value.length < 3) return;
+  event.target.scale({ x: 2, y: 2 });
+  isMouseOverStartPoint.value = true;
+};
+
+const handleMouseOutStartPoint = (event) => {
+  event.target.scale({ x: 1, y: 1 });
+  isMouseOverStartPoint.value = false;
+};
+
+const updatePointPositionInEditMode = (index, position) => {
+  points.value = [
+    ...points.value.slice(0, index),
+    position,
+    ...points.value.slice(index + 1),
+  ];
+
+  floors.value = floors.value.map((floor, floorIndex) =>
+    floorIndex === 0
+      ? floor.map((point, pointIndex) =>
+          pointIndex === index ? position : point
+        )
+      : floor
+  );
+};
+
+const handleDragMovePoint = (event) => {
+  const index = event.target.index - 1;
+  const position = [event.target.attrs.x, event.target.attrs.y];
+  updatePointPositionInEditMode(index, position);
+};
 
 const flattenedPoints = computed(() => {
   return points.value
