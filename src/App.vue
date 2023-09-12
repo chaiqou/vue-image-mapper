@@ -1,4 +1,10 @@
 <template>
+  <button @click="toggleDrawingMode">
+    {{ isDrawing ? "Stop Drawing" : "Start Drawing" }}
+  </button>
+  <button v-if="isDrawing" @click="toggleEditingMode">
+    {{ isEditing ? "Stop Editing" : "Start Editing" }}
+  </button>
   <v-stage
     :config="stageConfig"
     @mousedown="handleOnStageClick"
@@ -68,5 +74,22 @@ const handleOnStageClick = (event) => {
 const handleOnStageMove = (event) => {
   const mousePosition = [event.evt.offsetX, event.evt.offsetY];
   cursorMousePosition.value = mousePosition;
+};
+
+const toggleDrawingMode = () => {
+  isDrawing.value = !isDrawing.value;
+  isEditing.value = false;
+  if (points.value.length > 0) {
+    floors.value = [...floors.value, points.value];
+  }
+  points.value = [];
+};
+
+const toggleEditingMode = () => {
+  isEditing.value = !isEditing.value;
+
+  if (!isEditing.value && points.value.length > 0) {
+    floors.value = [...floors.value, points.value];
+  }
 };
 </script>
