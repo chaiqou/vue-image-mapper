@@ -1,44 +1,5 @@
-<template>
-  <button @click="toggleDrawingMode">
-    {{ isDrawing ? "Stop Drawing" : "Start Drawing" }}
-  </button>
-  <button v-if="isDrawing" @click="toggleEditingMode">
-    {{ isEditing ? "Stop Editing" : "Start Editing" }}
-  </button>
-  <v-stage
-    :config="stageConfig"
-    @mousedown="handleOnStageClick"
-    @mousemove="handleOnStageMove"
-    ref="stageRef"
-    :style="{ cursor: isDrawing ? 'crosshair' : 'default' }"
-  >
-    <v-layer>
-      <v-image
-        :config="{
-          image: image,
-        }"
-        :height="windowHeight"
-        :width="windowWidth"
-      />
-      <v-group>
-        <v-line :config="lineConfig" :points="flattenedPoints" />
-        <v-rect
-          v-for="(point, index) in points"
-          :key="index"
-          :config="rectangleConfig(point, index)"
-        />
-        <v-line
-          v-for="(floorPoints, index) in floors"
-          :key="`floor-${index}`"
-          :config="floorConfig(floorPoints)"
-        />
-      </v-group>
-    </v-layer>
-  </v-stage>
-</template>
-
 <script setup>
-import { ref, reactive, computed, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 
 const points = ref([]);
 const cursorMousePosition = ref([0, 0]);
@@ -53,18 +14,19 @@ const windowWidth = ref(0);
 const windowHeight = ref(0);
 
 onMounted(() => {
-  // display image
+  // Load and display the background image
   const newImage = new Image();
   newImage.src = "../src/assets/apartment.png";
   newImage.onload = () => {
     image.value = newImage;
   };
 
-  // Get window coordinants for image
+  // Get window coordinates for the image
   windowHeight.value = window.innerHeight;
   windowWidth.value = window.innerWidth;
 });
 
+// Configurations for varius shapes
 const stageConfig = computed(() => ({
   width: window.innerWidth,
   height: window.innerHeight,
@@ -96,6 +58,12 @@ const rectangleConfig = (point, index) => ({
   draggable: isEditing.value,
   onDragMove: handleDragMovePoint,
   ...getRectangleAttributes(index),
+});
+
+const flattenedPoints = computed(() => {
+  return points.value
+    .concat(isFinished.value ? [] : cursorMousePosition.value)
+    .reduce((a, b) => a.concat(b), []);
 });
 
 const getRectangleAttributes = (index) =>
@@ -140,12 +108,6 @@ const handleDragMovePoint = (event) => {
   updatePointPositionInEditMode(index, position);
 };
 
-const flattenedPoints = computed(() => {
-  return points.value
-    .concat(isFinished.value ? [] : cursorMousePosition.value)
-    .reduce((a, b) => a.concat(b), []);
-});
-
 const handleOnStageClick = (event) => {
   const mousePosition = [event.evt.offsetX, event.evt.offsetY];
 
@@ -182,3 +144,42 @@ const toggleEditingMode = () => {
   }
 };
 </script>
+
+<template>
+  <button @click="toggleDrawingMode">
+    {{ isDrawing ? "Stop Drawing" : "Start Drawing" }}
+  </button>
+  <button v-if="isDrawing" @click="toggleEditingMode">
+    {{ isEditing ? "Stop Editing" : "Start Editing" }}
+  </button>
+  <v-stage
+    :config="stageConfig"
+    @mousedown="handleOnStageClick"
+    @mousemove="handleOnStageMove"
+    ref="stageRef"
+    :style="{ cursor: isDrawing ? 'crosshair' : 'default' }"
+  >
+    <v-layer>
+      <v-image
+        :config="{
+          image: image,
+        }"
+        :height="windowHeight"
+        :width="windowWidth"
+      />
+      <v-group>
+        <v-line :config="lineConfig" :points="flattenedPoints" />
+        <v-rect
+          v-for="(point, index) in points"
+          :key="index"
+          :config="rectangleConfig(point, index)"
+        />
+        <v-line
+          v-for="(floorPoints, index) in floors"
+          :key="`floor-${index}`"
+          :config="floorConfig(floorPoints)"
+        />
+      </v-group>
+    </v-layer>
+  </v-stage>
+</template>
