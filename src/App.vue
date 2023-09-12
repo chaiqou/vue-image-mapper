@@ -87,19 +87,7 @@ const handleMouseOutStartPoint = (event) => {
 };
 
 const updatePointPositionInEditMode = (index, position) => {
-  points.value = [
-    ...points.value.slice(0, index),
-    position,
-    ...points.value.slice(index + 1),
-  ];
-
-  floors.value = floors.value.map((floor, floorIndex) =>
-    floorIndex === 0
-      ? floor.map((point, pointIndex) =>
-          pointIndex === index ? position : point
-        )
-      : floor
-  );
+  points.value[index] = position;
 };
 
 const handleDragMovePoint = (event) => {
@@ -138,10 +126,6 @@ const toggleDrawingMode = () => {
 
 const toggleEditingMode = () => {
   isEditing.value = !isEditing.value;
-
-  if (!isEditing.value && points.value.length > 0) {
-    floors.value = [...floors.value, points.value];
-  }
 };
 </script>
 
