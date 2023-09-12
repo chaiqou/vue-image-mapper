@@ -20,6 +20,9 @@
         :height="windowHeight"
         :width="windowWidth"
       />
+      <v-group>
+        <v-line :config="lineConfig" :points="flattenedPoints" />
+      </v-group>
     </v-layer>
   </v-stage>
 </template>
@@ -56,6 +59,19 @@ const stageConfig = computed(() => ({
   width: window.innerWidth,
   height: window.innerHeight,
 }));
+
+const lineConfig = computed(() => ({
+  stroke: "black",
+  lineJoin: "round",
+  strokeWidth: 5,
+  closed: isFinished.value,
+}));
+
+const flattenedPoints = computed(() => {
+  return points.value
+    .concat(isFinished.value ? [] : cursorMousePosition.value)
+    .reduce((a, b) => a.concat(b), []);
+});
 
 const handleOnStageClick = (event) => {
   const mousePosition = [event.evt.offsetX, event.evt.offsetY];
