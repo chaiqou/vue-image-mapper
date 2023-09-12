@@ -27,6 +27,11 @@
           :key="index"
           :config="rectangleConfig(point, index)"
         />
+        <v-line
+          v-for="(floorPoints, index) in floors"
+          :key="`floor-${index}`"
+          :config="floorConfig(floorPoints)"
+        />
       </v-group>
     </v-layer>
   </v-stage>
@@ -72,14 +77,13 @@ const lineConfig = computed(() => ({
   closed: isFinished.value,
 }));
 
-const getRectangleAttributes = (index) =>
-  index === 0
-    ? {
-        hitStrokeWidth: 12,
-        onMouseOver: handleMouseOverStartPoint,
-        onMouseOut: handleMouseOutStartPoint,
-      }
-    : {};
+const floorConfig = (floorPoints) => ({
+  points: floorPoints.reduce((a, b) => a.concat(b), []),
+  fill: "blue",
+  lineJoin: "round",
+  opacity: 0.5,
+  closed: true,
+});
 
 const rectangleConfig = (point, index) => ({
   x: point[0] - 6 / 2.5,
@@ -93,6 +97,15 @@ const rectangleConfig = (point, index) => ({
   onDragMove: handleDragMovePoint,
   ...getRectangleAttributes(index),
 });
+
+const getRectangleAttributes = (index) =>
+  index === 0
+    ? {
+        hitStrokeWidth: 12,
+        onMouseOver: handleMouseOverStartPoint,
+        onMouseOut: handleMouseOutStartPoint,
+      }
+    : {};
 
 const handleMouseOverStartPoint = (event) => {
   if (isFinished.value || points.value.length < 3) return;
