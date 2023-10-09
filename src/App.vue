@@ -24,6 +24,12 @@ onMounted(() => {
   // Get window coordinates for the image
   windowHeight.value = window.innerHeight;
   windowWidth.value = window.innerWidth;
+
+  // Add a window resize listener
+  window.addEventListener("resize", () => {
+    windowWidth.value = window.innerWidth;
+    windowHeight.value = window.innerHeight;
+  });
 });
 
 // Configurations for varius shapes
@@ -142,6 +148,8 @@ const toggleEditingMode = () => {
     @mousemove="handleOnStageMove"
     ref="stageRef"
     :style="{ cursor: isDrawing ? 'crosshair' : 'default' }"
+    :width="windowWidth"
+    :height="windowHeight"
   >
     <v-layer>
       <v-image
