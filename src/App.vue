@@ -7,7 +7,7 @@ const isMouseOverStartPoint = ref(false);
 const isFinished = ref(false);
 const isDrawing = ref(false);
 const isEditing = ref(false);
-const floors = ref([]);
+const shapes = ref([]);
 const stageRef = ref();
 const image = ref(null);
 const windowWidth = ref(0);
@@ -40,8 +40,8 @@ const lineConfig = computed(() => ({
   closed: isFinished.value,
 }));
 
-const floorConfig = (floorPoints) => ({
-  points: floorPoints.reduce((a, b) => a.concat(b), []),
+const shapeConfig = (shapePoints) => ({
+  points: shapePoints.reduce((a, b) => a.concat(b), []),
   fill: "blue",
   lineJoin: "round",
   opacity: 0.5,
@@ -120,7 +120,7 @@ const toggleDrawingMode = () => {
   isDrawing.value = !isDrawing.value;
   isEditing.value = false;
   if (points.value.length > 0) {
-    floors.value = [...floors.value, points.value];
+    shapes.value = [...shapes.value, points.value];
   }
   points.value = [];
 };
@@ -161,9 +161,9 @@ const toggleEditingMode = () => {
           :config="rectangleConfig(point, index)"
         />
         <v-line
-          v-for="(floorPoints, index) in floors"
-          :key="`floor-${index}`"
-          :config="floorConfig(floorPoints)"
+          v-for="(shapePoints, index) in shapes"
+          :key="`shape-${index}`"
+          :config="shapeConfig(shapePoints)"
         />
       </v-group>
     </v-layer>
