@@ -33,11 +33,6 @@ onMounted(() => {
 });
 
 // Configurations for varius shapes
-const stageConfig = computed(() => ({
-  width: window.innerWidth,
-  height: window.innerHeight,
-}));
-
 const lineConfig = computed(() => ({
   stroke: "black",
   lineJoin: "round",
@@ -143,7 +138,6 @@ const toggleEditingMode = () => {
     {{ isEditing ? "Stop Editing" : "Start Editing" }}
   </button>
   <v-stage
-    :config="stageConfig"
     @mousedown="handleOnStageClick"
     @mousemove="handleOnStageMove"
     ref="stageRef"
