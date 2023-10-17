@@ -63,6 +63,11 @@ const rectangleConfig = (point, index) => ({
   ...getRectangleAttributes(index),
 });
 
+const stageConfig = ref({
+  width: 1920,
+  height: 1080,
+});
+
 const flattenedPoints = computed(() => {
   return points.value
     .concat(isFinished.value ? [] : cursorMousePosition.value)
