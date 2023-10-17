@@ -143,8 +143,8 @@ const updateShapeCoordinatesBasedNewImageDimensions = (shapePoints) => {
   return {
     points: shapePoints
       .map((point) => [
-        (point[0] * scaleX).toFixed(2),
-        (point[1] * scaleY).toFixed(2),
+        Math.round(point[0] * scaleX),
+        Math.round(point[1] * scaleY),
       ])
       .reduce((a, b) => a.concat(b), []),
     fill: "blue",
