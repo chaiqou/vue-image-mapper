@@ -154,7 +154,6 @@ const toggleEditingMode = () => {
         }"
         :height="imageHeight"
         :width="imageWidth"
-        :class="{ 'resized-image': isResized }"
       />
       <v-group>
         <v-line :config="lineConfig" :points="flattenedPoints" />
