@@ -140,14 +140,14 @@ const toggleEditingMode = () => {
     :style="{ cursor: isDrawing ? 'crosshair' : 'default' }"
   >
     <v-layer>
-      <v-image
-        :config="{
-          image: image,
-        }"
-        :height="imageHeight"
-        :width="imageWidth"
-      />
       <v-group>
+        <v-image
+          :config="{
+            image: image,
+          }"
+          :height="imageHeight"
+          :width="imageWidth"
+        />
         <v-line :config="lineConfig" :points="flattenedPoints" />
         <v-rect
           v-for="(point, index) in points"
