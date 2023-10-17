@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 
 const points = ref([]);
 const cursorMousePosition = ref([0, 0]);
@@ -12,6 +12,8 @@ const stageRef = ref();
 const image = ref(null);
 const imageHeight = ref(1080);
 const imageWidth = ref(1920);
+const windowWidth = ref(0);
+const windowHeight = ref(0);
 
 onMounted(() => {
   const newImage = new Image();
@@ -19,9 +21,16 @@ onMounted(() => {
   newImage.onload = () => {
     image.value = newImage;
   };
+
+  windowHeight.value = window.innerHeight;
+  windowWidth.value = window.innerWidth;
+
+  window.addEventListener("resize", () => {
+    windowWidth.value = window.innerWidth;
+    windowHeight.value = window.innerHeight;
+  });
 });
 
-// Configurations for varius shapes
 const lineConfig = computed(() => ({
   stroke: "black",
   lineJoin: "round",
@@ -51,8 +60,8 @@ const rectangleConfig = (point, index) => ({
 });
 
 const stageConfig = ref({
-  width: 1920,
-  height: 1080,
+  width: window.innerWidth,
+  height: window.innerHeight,
 });
 
 const flattenedPoints = computed(() => {
@@ -122,6 +131,23 @@ const toggleDrawingMode = () => {
 const toggleEditingMode = () => {
   isEditing.value = !isEditing.value;
 };
+
+const updateShapeCoordinatesBasedNewWindowDimension = (shapePoints) => {
+  const scaleX = windowWidth.value / imageWidth.value;
+  const scaleY = windowHeight.value / imageHeight.value;
+
+  console.log("scaleX", scaleX);
+  console.log("scaleY", scaleY);
+  return {
+    points: shapePoints
+      .map((point) => [point[0] * scaleX, point[1] * scaleY])
+      .reduce((a, b) => a.concat(b), []),
+    fill: "blue",
+    lineJoin: "round",
+    opacity: 0.5,
+    closed: true,
+  };
+};
 </script>
 
 <template>
@@ -145,8 +171,8 @@ const toggleEditingMode = () => {
           :config="{
             image: image,
           }"
-          :height="imageHeight"
-          :width="imageWidth"
+          :height="windowHeight"
+          :width="windowWidth"
         />
         <v-line :config="lineConfig" :points="flattenedPoints" />
         <v-rect
@@ -157,7 +183,7 @@ const toggleEditingMode = () => {
         <v-line
           v-for="(shapePoints, index) in shapes"
           :key="`shape-${index}`"
-          :config="shapeConfig(shapePoints)"
+          :config="updateShapeCoordinatesBasedNewWindowDimension(shapePoints)"
         />
       </v-group>
     </v-layer>
