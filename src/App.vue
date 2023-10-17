@@ -9,18 +9,17 @@ const isDrawing = ref(false);
 const isEditing = ref(false);
 const shapes = ref([]);
 const stageRef = ref();
-const image = ref(null);
-const imageHeight = ref(1080);
-const imageWidth = ref(1920);
+const image = ref(new Image());
+const imageHeight = ref(0);
+const imageWidth = ref(0);
 const windowWidth = ref(0);
 const windowHeight = ref(0);
 
 onMounted(() => {
-  const newImage = new Image();
-  newImage.src = "../src/assets/apartment.png";
-  newImage.onload = () => {
-    image.value = newImage;
-  };
+  image.value.src = "../src/assets/apartment.png";
+  image.value.addEventListener("load", () => {
+    correctImageDimension();
+  });
 
   windowHeight.value = window.innerHeight;
   windowWidth.value = window.innerWidth;
@@ -30,6 +29,11 @@ onMounted(() => {
     windowHeight.value = window.innerHeight;
   });
 });
+
+const correctImageDimension = () => {
+  imageWidth.value = image.value.naturalWidth;
+  imageHeight.value = image.value.naturalHeight;
+};
 
 const lineConfig = computed(() => ({
   stroke: "black",
@@ -132,15 +136,16 @@ const toggleEditingMode = () => {
   isEditing.value = !isEditing.value;
 };
 
-const updateShapeCoordinatesBasedNewWindowDimension = (shapePoints) => {
+const updateShapeCoordinatesBasedNewImageDimensions = (shapePoints) => {
   const scaleX = windowWidth.value / imageWidth.value;
   const scaleY = windowHeight.value / imageHeight.value;
 
-  console.log("scaleX", scaleX);
-  console.log("scaleY", scaleY);
   return {
     points: shapePoints
-      .map((point) => [point[0] * scaleX, point[1] * scaleY])
+      .map((point) => [
+        (point[0] * scaleX).toFixed(2),
+        (point[1] * scaleY).toFixed(2),
+      ])
       .reduce((a, b) => a.concat(b), []),
     fill: "blue",
     lineJoin: "round",
@@ -183,7 +188,7 @@ const updateShapeCoordinatesBasedNewWindowDimension = (shapePoints) => {
         <v-line
           v-for="(shapePoints, index) in shapes"
           :key="`shape-${index}`"
-          :config="updateShapeCoordinatesBasedNewWindowDimension(shapePoints)"
+          :config="updateShapeCoordinatesBasedNewImageDimensions(shapePoints)"
         />
       </v-group>
     </v-layer>
