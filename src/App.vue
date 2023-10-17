@@ -38,7 +38,7 @@ onMounted(() => {
 const lineConfig = computed(() => ({
   stroke: "black",
   lineJoin: "round",
-  strokeWidth: 5,
+  strokeWidth: 3,
   closed: isFinished.value,
 }));
 
@@ -111,7 +111,7 @@ const handleOnStageClick = (event) => {
     return;
   }
 
-  if (isMouseOverStartPoint.value && points.value.length >= 3) {
+  if (isMouseOverStartPoint.value) {
     isFinished.value = true;
   } else if (isDrawing.value) {
     points.value = [...points.value, mousePosition];
@@ -144,13 +144,13 @@ const toggleEditingMode = () => {
   <button v-if="isDrawing" @click="toggleEditingMode">
     {{ isEditing ? "Stop Editing" : "Start Editing" }}
   </button>
+
   <v-stage
     @mousedown="handleOnStageClick"
     @mousemove="handleOnStageMove"
     ref="stageRef"
+    :config="stageConfig"
     :style="{ cursor: isDrawing ? 'crosshair' : 'default' }"
-    :width="windowWidth"
-    :height="windowHeight"
   >
     <v-layer>
       <v-image
