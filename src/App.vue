@@ -10,28 +10,15 @@ const isEditing = ref(false);
 const shapes = ref([]);
 const stageRef = ref();
 const image = ref(null);
-const windowWidth = ref(0);
-const windowHeight = ref(0);
 const imageHeight = ref(1080);
 const imageWidth = ref(1920);
 
 onMounted(() => {
-  // Load and display the background image
   const newImage = new Image();
   newImage.src = "../src/assets/apartment.png";
   newImage.onload = () => {
     image.value = newImage;
   };
-
-  // Get window coordinates for the image
-  windowHeight.value = window.innerHeight;
-  windowWidth.value = window.innerWidth;
-
-  // Add a window resize listener
-  window.addEventListener("resize", () => {
-    windowWidth.value = window.innerWidth;
-    windowHeight.value = window.innerHeight;
-  });
 });
 
 // Configurations for varius shapes
