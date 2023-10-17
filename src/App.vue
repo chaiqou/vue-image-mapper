@@ -150,8 +150,8 @@ const toggleEditingMode = () => {
         :config="{
           image: image,
         }"
-        :height="windowHeight"
-        :width="windowWidth"
+        :height="1080"
+        :width="1920"
       />
       <v-group>
         <v-line :config="lineConfig" :points="flattenedPoints" />
