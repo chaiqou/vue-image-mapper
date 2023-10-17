@@ -12,6 +12,8 @@ const stageRef = ref();
 const image = ref(null);
 const windowWidth = ref(0);
 const windowHeight = ref(0);
+const imageHeight = ref(1080);
+const imageWidth = ref(1920);
 
 onMounted(() => {
   // Load and display the background image
@@ -150,8 +152,9 @@ const toggleEditingMode = () => {
         :config="{
           image: image,
         }"
-        :height="1080"
-        :width="1920"
+        :height="imageHeight"
+        :width="imageWidth"
+        :class="{ 'resized-image': isResized }"
       />
       <v-group>
         <v-line :config="lineConfig" :points="flattenedPoints" />
