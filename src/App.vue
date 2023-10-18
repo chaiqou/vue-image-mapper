@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, onMounted } from "vue";
 
 const points = ref([]);
 const cursorMousePosition = ref([0, 0]);
@@ -41,14 +41,6 @@ const lineConfig = computed(() => ({
   strokeWidth: 3,
   closed: isFinished.value,
 }));
-
-const shapeConfig = (shapePoints) => ({
-  points: shapePoints.reduce((a, b) => a.concat(b), []),
-  fill: "blue",
-  lineJoin: "round",
-  opacity: 0.5,
-  closed: true,
-});
 
 const rectangleConfig = (point, index) => ({
   x: point[0] - 6 / 2.5,
