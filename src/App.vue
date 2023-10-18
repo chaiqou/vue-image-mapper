@@ -31,8 +31,8 @@ onMounted(() => {
 });
 
 const correctImageDimension = () => {
-  imageWidth.value = image.value.naturalWidth;
-  imageHeight.value = image.value.naturalHeight;
+  imageWidth.value = window.innerWidth;
+  imageHeight.value = window.innerHeight;
 };
 
 const lineConfig = computed(() => ({
@@ -134,10 +134,7 @@ const updateShapeCoordinatesBasedNewImageDimensions = (shapePoints) => {
 
   return {
     points: shapePoints
-      .map((point) => [
-        Math.round(point[0] * scaleX),
-        Math.round(point[1] * scaleY),
-      ])
+      .map((point) => [point[0] * scaleX, point[1] * scaleY])
       .reduce((a, b) => a.concat(b), []),
     fill: "blue",
     lineJoin: "round",
