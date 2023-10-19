@@ -38,7 +38,7 @@ const correctImageDimension = () => {
 const lineConfig = computed(() => ({
   stroke: "black",
   lineJoin: "round",
-  strokeWidth: 3,
+  strokeWidth: 5,
   closed: isFinished.value,
 }));
 
