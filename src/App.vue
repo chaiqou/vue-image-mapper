@@ -160,14 +160,14 @@ const updateShapeCoordinatesBasedNewImageDimensions = (shapePoints) => {
     :style="{ cursor: isDrawing ? 'crosshair' : 'default' }"
   >
     <v-layer>
+      <v-image
+        :config="{
+          image: image,
+        }"
+        :height="windowHeight"
+        :width="windowWidth"
+      />
       <v-group>
-        <v-image
-          :config="{
-            image: image,
-          }"
-          :height="windowHeight"
-          :width="windowWidth"
-        />
         <v-line :config="lineConfig" :points="flattenedPoints" />
         <v-rect
           v-for="(point, index) in points"
