@@ -118,6 +118,7 @@ const handleOnStageMove = (event) => {
 const toggleDrawingMode = () => {
   isDrawing.value = !isDrawing.value;
   isEditing.value = false;
+  isFinished.value = false;
   if (points.value.length > 0) {
     shapes.value = [...shapes.value, points.value];
   }
