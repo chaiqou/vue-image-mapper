@@ -60,6 +60,7 @@ const stageConfig = ref({
   height: window.innerHeight,
 });
 
+// [ [a, b], [c, d], ... ] to [ a, b, c, d, ...]
 const flattenedPoints = computed(() => {
   return points.value
     .concat(isFinished.value ? [] : cursorMousePosition.value)
